@@ -5,7 +5,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Map;
-
+import com.example.androidhttpserver.NanoHTTPD.Method;
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Environment;
@@ -45,31 +45,28 @@ public class Httpd extends Activity {
         }
 
         @Override
-        public Response serve(String uri, Method method, 
-                              Map<String, String> header,
-                              Map<String, String> parameters,
-                              Map<String, String> files) {
-            String answer = "";
-            try {
-            	/* received user_id and product_id from Mgmt 
-            	*/
-                // Open file from SD Card
-                File root = Environment.getExternalStorageDirectory();
-                FileReader index = new FileReader(root.getAbsolutePath() +
-                        "/www/index.html");
-                BufferedReader reader = new BufferedReader(index);
-                String line = "";
-                while ((line = reader.readLine()) != null) {
-                    answer += line;
-                }
-                reader.close();
-
-            } catch(IOException ioe) {
-                Log.w("Httpd", ioe.toString());
-            }
-
-
-            return new NanoHTTPD.Response(answer);
+        public Response serve(IHTTPSession session) {
+        	/*Node server take game_id and user_id and do proper response.*/
+        	Log.d(session.getMethod().toString(),"http method shown here");
+        	Log.d(session.getQueryParameterString(), "get query parameter string ");
+        	Log.d(session.getUri(),"so you know client's uri is...");
+        	
+        
+        	for(String str : session.getHeaders().keySet()){
+        		Log.d(str ,"tell me headers");
+        		Log.d(session.getHeaders().get(str) ,"tell me header value");
+        	}
+        	
+        	//StringBuilder stringBuilder = new StringBuilder();
+        
+        	for(String str : session.getParms().keySet()){
+        		Log.d(str ,"tell me parms");
+        		Log.d(session.getParms().get(str) ,"tell me parms value");
+        		/* 11142014 @Chris: should implement passing game_id and user_id to 
+        		 * file system in execute method before serve*/
+        	}
+        
+            return new NanoHTTPD.Response("");
         }
     }
 
